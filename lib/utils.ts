@@ -2,6 +2,7 @@
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -193,3 +194,65 @@ export const getTransactionStatus = (date: Date) => {
 
   return date > twoDaysAgo ? "Processing" : "Success";
 };
+
+export const authFormSchema = (type: string) =>
+  z.object({
+    firstName:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "Nome deve ser informado" })
+            .min(3, { message: "O nome deve ter ao menos 3 caracteres" }),
+    lastName:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "Sobrenome deve ser informado" })
+            .min(3, { message: "O sobrenome deve ter ao menos 3 caracteres" }),
+    address:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "Endereço deve ser informado" })
+            .min(3, { message: "O endereço deve ter ao menos 3 caracteres" }),
+    city:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "Cidade deve ser informada" })
+            .min(3, { message: "A cidade deve ter ao menos 3 caracteres" }),
+    state:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "UF deve ser informada" })
+            .min(2, { message: "A UF deve ter 2 caracteres" })
+            .max(2, { message: "A UF deve ter 2 caracteres" }),
+    postalCode:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "CEP deve ser informado" })
+            .min(8, { message: "O CEP deve ter 8 caracteres" })
+            .max(8, { message: "O CEP deve ter 8 caracteres" }),
+    birth:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "Aniversário deve ser informado" })
+            .min(8, { message: "O aniversário deve ter 8 caracteres" })
+            .max(8, { message: "O aniversário deve ter 8 caracteres" }),
+    cpf:
+      type === "sign-in"
+        ? z.string().optional()
+        : z
+            .string({ required_error: "CPF deve ser informado" })
+            .min(11, { message: "O CPF deve ter 11 caracteres" })
+            .max(11, { message: "O CPF deve ter 11 caracteres" }),
+    email: z
+      .string({ required_error: "E-mail deve ser informado" })
+      .email({ message: "Insira um e-mail válido" }),
+    password: z
+      .string({ required_error: "Senha deve ser informada" })
+      .min(8, { message: "A senha deve ter no mínimo 8 caracteres" }),
+  });
